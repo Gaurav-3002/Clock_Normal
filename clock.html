@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url('watch-bg3.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .clock {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 340px;
+            height: 340px;
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+
+        .number {
+            position: absolute;
+            font-family: 'Times New Roman', serif;
+            font-size: 24px;
+            color: black;
+            text-align: center;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+        }
+
+        .hand {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom center;
+            background: black;
+        }
+
+        .center-dot {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: black;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+
+        .center-dot::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .hour {
+            width: 8px;
+            height: 85px;
+            clip-path: polygon(0 100%, 30% 100%, 50% 0, 70% 100%, 100% 100%, 85% 85%, 15% 85%);
+            transform: translate(-50%, 15%);
+        }
+
+        .minute {
+            width: 6px;
+            height: 120px;
+            clip-path: polygon(0 90%, 25% 90%, 50% 0, 75% 90%, 100% 90%, 85% 100%, 15% 100%);
+        }
+
+        .second {
+            width: 2px;
+            height: 140px;
+            background: none;
+        }
+
+        .second::before {
+            content: '';
+            position: absolute;
+            width: 4px;
+            height: 140px;
+            background: black;
+            bottom: 0;
+            clip-path: polygon(0 100%, 25% 93%, 50% 0, 75% 93%, 100% 100%, 75% 100%, 25% 100%);
+        }
+
+        .second::after {
+            content: '';
+            position: absolute;
+            width: 3px;
+            height: 8px;
+            background: black;
+            left: 0.5px;
+            bottom: 35px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="clock">
+        <div class="center-dot"></div>
+        <div class="hand hour"></div>
+        <div class="hand minute"></div>
+        <div class="hand second"></div>
+    </div>
+
+    <script>
+        const clock = document.querySelector('.clock');
+        const letters = ['I', 'N', 'T', 'E', 'R', 'S', 'T', 'E', 'L', 'L', 'A', 'R'];
+
+        // Create clock numbers
+        letters.forEach((letter, i) => {
+            const number = document.createElement('div');
+            number.className = 'number';
+            number.textContent = letter;
+
+            // Calculate position
+            const angle = (i * 30 - 90) * (Math.PI / 180);
+            const radius = 145;
+            const x = Math.cos(angle) * radius;
+            const y = Math.sin(angle) * radius;
+
+            number.style.left = `${x + 170}px`;
+            number.style.top = `${y + 170}px`;
+            number.style.transform = 'translate(-50%, -50%)';
+
+            clock.appendChild(number);
+        });
+
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours() % 12;
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+
+            // Calculate degrees
+            const hourDegree = (hours + minutes / 60) * 30;
+            const minuteDegree = (minutes + seconds / 60) * 6;
+            const secondDegree = seconds * 6;
+
+            // Update hands
+            document.querySelector('.hour').style.transform = `rotate(${hourDegree}deg)`;
+            document.querySelector('.minute').style.transform = `rotate(${minuteDegree}deg)`;
+            document.querySelector('.second').style.transform = `rotate(${secondDegree}deg)`;
+        }
+
+        // Update clock immediately and every second
+        updateClock();
+        setInterval(updateClock, 1000);
+    </script>
+</body>
+
+</html>
